@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrainHub</title>
+<style>
+body {margin:0;font-family:Arial;background:#0f172a;color:white;}
+header {background:#111827;padding:15px;text-align:center;font-size:22px;font-weight:bold;}
+nav {display:flex;flex-wrap:wrap;background:#1f2937;}
+nav button {flex:1;padding:10px;background:#2563eb;border:none;color:white;cursor:pointer;}
+nav button:hover {background:#1d4ed8;}
+main {padding:15px;}
+.page {display:none;}
+.page.active {display:block;}
+.card {background:#111827;padding:10px;border-radius:8px;margin-bottom:10px;}
+textarea,input {width:100%;padding:8px;margin-top:5px;background:#020617;color:white;border:1px solid #334155;}
+button.send {background:#22c55e;padding:8px;border:none;margin-top:5px;}
+</style>
+</head>
+
+<body>
+
+<header>🧠 BrainHub - Entraide Scolaire</header>
+
+<nav>
+<button onclick="show('home')">Accueil</button>
+<button onclick="show('classes')">Classes</button>
+<button onclick="show('matieres')">Matières</button>
+<button onclick="show('clubs')">Clubs</button>
+<button onclick="show('entraide')">Entraide</button>
+</nav>
+
+<main>
+<div id="home" class="page active card">
+<h2>Bienvenue sur BrainHub</h2>
+<p>Plateforme d’entraide entre élèves. Projet perso non officiel.</p>
+<p>Règles : respect, pas d’insultes, pas d’infos personnelles.</p>
+</div>
+
+<div id="classes" class="page card">
+<h2>Classes</h2>
+<ul>
+<li>6ème</li>
+<li>5ème</li>
+<li>4ème</li>
+<li>3ème</li>
+</ul>
+</div>
+
+<div id="matieres" class="page card">
+<h2>Matières</h2>
+<ul>
+<li>Maths</li>
+<li>Français</li>
+<li>Sciences</li>
+<li>Histoire-Géo</li>
+<li>Anglais</li>
+<li>Latin / LCE</li>
+</ul>
+</div>
+
+<div id="clubs" class="page card">
+<h2>Clubs</h2>
+<ul>
+<li>Club d’échecs</li>
+<li>CNRD</li>
+<li>Latin</li>
+<li>LCE</li>
+</ul>
+</div>
+
+<div id="entraide" class="page card">
+<h2>Poster un message</h2>
+<input id="pseudo" placeholder="Pseudo">
+<textarea id="msg" placeholder="Ton message"></textarea>
+<button class="send" onclick="post()">Envoyer</button>
+<div id="wall"></div>
+</div>
+
+</main>
+
+<script>
+function show(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+}
+
+let bad=["con","merde","putain","connard","nul","idiot"];
+function post(){
+ let p=document.getElementById("pseudo").value||"Anonyme";
+ let m=document.getElementById("msg").value;
+ bad.forEach(w=>m=m.replace(new RegExp(w,"gi"),"***"));
+
+ let data=JSON.parse(localStorage.getItem("brainhub")||"[]");
+ data.push({p,m});
+ localStorage.setItem("brainhub",JSON.stringify(data));
+ load();
+}
+function load(){
+ let data=JSON.parse(localStorage.getItem("brainhub")||"[]");
+ let w=document.getElementById("wall");
+ w.innerHTML="";
+ data.forEach(d=>w.innerHTML+=`<div class='card'><b>${d.p}</b>: ${d.m}</div>`);
+}
+load();
+</script>
+
+</body>
+</html>
